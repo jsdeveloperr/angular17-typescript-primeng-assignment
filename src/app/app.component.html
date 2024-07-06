@@ -1,4 +1,5 @@
 <!-- <main-header></main-header>
 <main-footer></main-footer> -->
+<app-loading-spinner *ngIf="loadingService.isLoading$ | async"></app-loading-spinner>
 <main-header></main-header>
-<router-outlet></router-outlet>
+<router-outlet #outlet="outlet" [@routeAnimations]="prepareRoute(outlet)"></router-outlet>
