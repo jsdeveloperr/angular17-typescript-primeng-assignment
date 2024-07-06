@@ -1,0 +1,52 @@
+<div *ngIf="product" class="product-detail">
+  <div class="product-main-info">
+    <p-galleria
+      [value]="product.productImage"
+      [numVisible]="1"
+      [responsiveOptions]="responsiveOptions"
+      [containerStyle]="{ 'max-width': '640px' }"
+      [numVisible]="5"
+      [showThumbnails]="true"
+      [showIndicators]="true">
+      <ng-template pTemplate="item" let-image>
+        <div class="product-image">
+          <img [src]="image" alt="{{ product.productName }}">
+        </div>
+      </ng-template>
+      <ng-template pTemplate="thumbnail" let-item>
+        <div class="grid grid-nogutter justify-content-center">
+          <img [src]="item" style="width: 100px; height: auto; border-radius: 10px;"/>
+        </div>
+      </ng-template>
+    </p-galleria>
+    <div class="product-info">
+      <h2>{{ product.productName }}</h2>
+      <p>{{ product.productDescription.description }}</p>
+      <p>Fiyat: {{ product.productPrice | currency:'TRY' }}</p>
+      <div class="product-actions">
+        <button icon="pi pi-heart" pButton type="button" label="Favoriye Ekle" (click)="addToFavorites(product)"></button>
+        <button icon="pi pi-shopping-cart"  pButton type="button" label="Sepete Ekle" (click)="addToCart(product)"></button>
+      </div>
+    </div>
+  </div>
+
+  <h3>Önerilen Ürünler</h3>
+  <p-carousel [value]="recommendedProducts" [numVisible]="3" [numScroll]="3" [circular]="false" [responsiveOptions]="responsiveOptions">
+    <ng-template let-recommendedProduct pTemplate="item">
+      <div class="product-card">
+        <div class="relative mx-auto">
+          <img [src]="recommendedProduct.productImage[0]" [alt]="recommendedProduct.productName" class="product-image" />
+          <p-tag [value]="recommendedProduct.inventoryStatus" [severity]="getSeverity(recommendedProduct.inventoryStatus)" class="absolute" [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"></p-tag>
+        </div>
+        <div class="mb-3 font-medium">{{ recommendedProduct.productName }}</div>
+        <div class="flex justify-content-between align-items-center">
+          <div class="mt-0 font-semibold text-xl">{{ recommendedProduct.productPrice | currency:'TRY' }}</div>
+          <span class="favorite-actions">
+            <p-button icon="pi pi-heart" severity="secondary" [outlined]="true" (click)="addToFavorites(recommendedProduct)"></p-button>
+            <p-button icon="pi pi-shopping-cart" styleClass="ml-2" (click)="addToCart(recommendedProduct)"></p-button>
+          </span>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>

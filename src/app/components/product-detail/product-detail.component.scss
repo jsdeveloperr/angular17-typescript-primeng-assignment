@@ -1,0 +1,155 @@
+.product-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+
+  .favorite-actions {
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+
+    button {
+      flex: 1;
+      margin: 0 10px;
+    }
+  }
+
+  .product-main-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 40px;
+
+    .product-images {
+      width: 100%;
+      max-width: 500px;
+      margin-right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .product-image {
+        width: 100%;
+        margin-bottom: 10px;
+
+        img {
+          width: 100%;
+          height: auto;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .product-info {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+        color: #666;
+      }
+
+      .product-actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+
+        button {
+          margin: 5px;
+        }
+      }
+    }
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+
+  .product-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    max-width: 250px;
+
+    &:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .relative {
+      position: relative;
+
+      .product-image {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        max-width: 150px; /* Maksimum genişlik */
+        max-height: 150px; /* Maksimum yükseklik */
+      }
+    }
+
+    .product-info {
+      text-align: center;
+
+      .product-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .p-galleria {
+    .p-galleria-item-wrapper {
+      display: flex;
+      justify-content: center;
+
+      .product-image {
+        max-width: 500px;
+        max-height: 500px;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .p-galleria-thumbnail-wrapper {
+      .grid {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+
+        img {
+          width: 100px;
+          height: auto;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: transform 0.3s ease-in-out;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+      }
+    }
+  }
+}

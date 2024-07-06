@@ -1,0 +1,53 @@
+.favorites {
+  padding: 20px;
+  background-color: #f9f9f9;
+
+  .p-card {
+    margin-bottom: 20px;
+  }
+
+  .product-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+  }
+
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    h3 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+
+    p {
+      margin: 5px 0;
+      color: #6c757d;
+    }
+  }
+
+  .product-actions {
+    display: flex;
+    gap: 10px;
+
+    button {
+      flex: 1;
+      margin: 0;
+    }
+  }
+
+  .favorite-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    button {
+      flex: 1;
+      margin: 0 10px;
+    }
+  }
+}

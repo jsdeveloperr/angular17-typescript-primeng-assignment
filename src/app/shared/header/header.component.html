@@ -1,0 +1,12 @@
+<p-menubar [model]="menuItems">
+  <ng-template pTemplate="start">
+    <h1 style="margin: 0; padding: 0;">Sepet Uygulaması</h1>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="header-buttons">
+      <button pButton type="button" icon="pi pi-heart" label="Favoriler ({{ favoriteItems.length }})" (click)="navigateToFavorites()"></button>
+      <button pButton type="button" icon="pi pi-shopping-cart" label="Sepet ({{ cartItems.length }})" (click)="navigateToCart()"></button>
+    </div>
+  </ng-template>
+</p-menubar>
+<router-outlet></router-outlet>
