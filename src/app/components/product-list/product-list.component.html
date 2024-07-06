@@ -18,23 +18,3 @@
     </ng-template>
   </p-card>
 </div>
-<div class="product-list">
-  <p-card *ngFor="let product of products" class="product-card">
-    <ng-template pTemplate="header">
-      <div class="product-image">
-        <img [src]="product.productImage[0]" alt="{{ product.productName }}">
-      </div>
-    </ng-template>
-    <div class="product-info">
-      <h3>{{ product.productName }}</h3>
-      <p>{{ product.productDescription.description | truncate:100 }}</p>
-      <p>{{ product.productPrice | currency:'TRY' }}"></p>
-    </div>
-    <ng-template pTemplate="footer">
-      <div class="product-actions">
-        <button pButton type="button" class="w-full" styleClass="w-full" icon="pi pi-heart" label="Favoriye Ekle" (click)="addToFavorites($event, product)"></button>
-        <button pButton class="w-full" styleClass="w-full" type="button" icon="pi pi-shopping-cart" label="Sepete Ekle" (click)="addToCart($event, product)"></button>
-      </div>
-    </ng-template>
-  </p-card>
-</div>
