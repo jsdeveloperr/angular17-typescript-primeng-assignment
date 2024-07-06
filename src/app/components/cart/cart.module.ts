@@ -22,7 +22,7 @@ const routes: Routes = [
     ButtonModule,
     FormsModule,
   ],
-  exports: [],
+  exports: [RouterModule],
   declarations: [CartComponent],
   providers: [],
 })

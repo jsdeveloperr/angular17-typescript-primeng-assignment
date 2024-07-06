@@ -26,7 +26,7 @@ const routes: Routes = [
     FormsModule,
     CardModule
   ],
-  exports: [],
+  exports: [RouterModule],
   declarations: [FavoritesComponent],
   providers: [MessageService],
 })

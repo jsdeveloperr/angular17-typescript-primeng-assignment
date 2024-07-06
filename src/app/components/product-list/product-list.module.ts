@@ -25,7 +25,7 @@ const routes: Routes = [
     FormsModule,
     CardModule
   ],
-  exports: [],
+  exports: [RouterModule],
   declarations: [ProductListComponent, TruncatePipe],
   providers: [],
 })
