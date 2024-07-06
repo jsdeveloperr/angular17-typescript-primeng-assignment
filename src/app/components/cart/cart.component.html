@@ -27,15 +27,15 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item>
-        <tr (click)="goToDetail(item.product.productId)">
+        <tr>
           <td>
             <p-tableCheckbox [value]="item"></p-tableCheckbox>
           </td>
-          <td>{{ item.product.productName }}</td>
-          <td>
+          <td (click)="goToDetail(item.product.productId)">{{ item.product.productName }}</td>
+          <td (click)="goToDetail(item.product.productId)">
             <p-inputNumber [(ngModel)]="item.quantity" (onInput)="updateQuantity(item.product, item.quantity)"></p-inputNumber>
           </td>
-          <td>{{ item.product.productPrice | currency:'TRY' }}</td>
+          <td (click)="goToDetail(item.product.productId)">{{ item.product.productPrice | currency:'TRY' }}</td>
           <td>
             <button pButton type="button" icon="pi pi-trash" label="Çıkart" (click)="removeFromCart(item.product)"></button>
           </td>

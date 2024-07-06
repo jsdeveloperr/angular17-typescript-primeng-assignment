@@ -16,12 +16,12 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-product>
-          <tr (click)="goToDetail(product.productId)">
+          <tr>
             <td>
               <p-tableCheckbox [value]="product"></p-tableCheckbox>
             </td>
-            <td>{{ product.productName }}</td>
-            <td>{{ product.productPrice | currency:'TRY' }}</td>
+            <td (click)="goToDetail(product.productId)">{{ product.productName }}</td>
+            <td (click)="goToDetail(product.productId)">{{ product.productPrice | currency:'TRY' }}</td>
             <td class="favorite-actions">
               <button pButton type="button" icon="pi pi-trash" label="Çıkart" (click)="removeFromFavorites(product)"></button>
               <button pButton type="button" icon="pi pi-shopping-cart" label="Sepete Ekle" (click)="addToCart(product)"></button>
