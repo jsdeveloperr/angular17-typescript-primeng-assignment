@@ -19,7 +19,7 @@ export class ProductListComponent implements OnInit {
     private productService: ProductService,
     private cartService: CartService,
     private favoriteService: FavoriteService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -28,7 +28,7 @@ export class ProductListComponent implements OnInit {
     });
     const carts = this.cartService.getCarts();
     if (carts.length) {
-      this.cartId = carts[0].id;
+      this.cartId = carts[0].value;
     } else {
       const newCart = this.cartService.createCart();
       this.cartId = newCart.id;
@@ -48,6 +48,6 @@ export class ProductListComponent implements OnInit {
   }
 
   goToDetail(productId: string): void {
-    this.router.navigate(['/product', productId]);
+    this.router.navigate(['/product-detail', productId]);
   }
 }

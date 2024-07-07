@@ -1,71 +1,108 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Cart, CartItem } from '../models/cart';
 import { Product } from '../models/product';
-import { v4 as uuidv4 } from 'uuid';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private carts: Cart[] = [];
+  private carts: { [key: string]: Product[] } = {};
+  private currentCart: string = 'default';
   private cartItemsSubject = new BehaviorSubject<Product[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();
 
   constructor() {
-    this.createCart();
-  }
-
-  createCart(): Cart {
-    const newCart: Cart = {
-      id: uuidv4(),
-      items: [],
-      total: 0,
-      shippingFee: 40
-    };
-    this.carts.push(newCart);
-    this.updateCartItems();
-    return newCart;
-  }
-
-  getCarts(): Cart[] {
-    return this.carts;
-  }
-
-  getCart(cartId: string): Cart | undefined {
-    return this.carts.find(cart => cart.id === cartId);
-  }
-
-  addToCart(cartId: string, product: Product): void {
-    const cart = this.getCart(cartId);
-    if (cart) {
-      const existingItem = cart.items.find(item => item.product.productId === product.productId);
-      if (existingItem) {
-        existingItem.quantity++;
-      } else {
-        cart.items.push({ product, quantity: 1 });
-      }
-      this.updateCart(cart);
+    this.loadCartsFromLocalStorage();
+    if (!this.carts[this.currentCart]) {
+      this.carts[this.currentCart] = [];
     }
-  }
-
-  removeFromCart(cartId: string, product: Product): void {
-    const cart = this.getCart(cartId);
-    if (cart) {
-      cart.items = cart.items.filter(item => item.product.productId !== product.productId);
-      this.updateCart(cart);
-    }
-  }
-
-  updateCart(cart: Cart): void {
-    cart.total = cart.items.reduce((sum, item) => sum + item.product.productPrice * item.quantity, 0);
-    cart.shippingFee = cart.total >= 1000 ? 0 : 40;
-    cart.total += cart.shippingFee;
     this.updateCartItems();
   }
 
-  private updateCartItems(): void {
-    const allItems = this.carts.flatMap(cart => cart.items.map(item => item.product));
-    this.cartItemsSubject.next(allItems);
+  private loadCartsFromLocalStorage() {
+    const storedCarts = localStorage.getItem('carts');
+    if (storedCarts) {
+      this.carts = JSON.parse(storedCarts);
+    } else {
+      this.carts[this.currentCart] = [];
+    }
+  }
+
+  private saveCartsToLocalStorage() {
+    localStorage.setItem('carts', JSON.stringify(this.carts));
+  }
+
+  private updateCartItems() {
+    this.cartItemsSubject.next(this.carts[this.currentCart]);
+    this.saveCartsToLocalStorage();
+  }
+
+  addToCart(cartId: string, product: Product) {
+    if (!this.carts[cartId]) {
+      this.carts[cartId] = [];
+    }
+    const cart = this.carts[cartId];
+    const existingProduct = cart.find(p => p.productId === product.productId);
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+    } else {
+      product.quantity = 1;
+      cart.push(product);
+    }
+    this.updateCartItems();
+  }
+
+  removeFromCart(cartId: string, productId: string) {
+    if (!this.carts[cartId]) {
+      this.carts[cartId] = [];
+    }
+    const cart = this.carts[cartId];
+    const index = cart.findIndex(p => p.productId === productId);
+    if (index !== -1) {
+      cart.splice(index, 1);
+    }
+    this.updateCartItems();
+  }
+
+  clearCart(cartId: string) {
+    if (!this.carts[cartId]) {
+      this.carts[cartId] = [];
+    }
+    this.carts[cartId] = [];
+    this.updateCartItems();
+  }
+
+  getCart(cartId: string): Product[] {
+    return this.carts[cartId];
+  }
+
+  getTotal(cartId: string): number {
+    if (!this.carts[cartId]) {
+      this.carts[cartId] = [];
+    }
+    return this.carts[cartId].reduce((total, product) => total + (product.productPrice * product.quantity), 0);
+  }
+
+  createCart(): { id: string, products: Product[] } {
+    const newCartId = `cart-${Object.keys(this.carts).length + 1}`;
+    this.carts[newCartId] = [];
+    this.currentCart = newCartId;
+    this.updateCartItems();
+    return { id: newCartId, products: this.carts[newCartId] };
+  }
+
+  switchCart(cartId: string) {
+    if (this.carts[cartId]) {
+      this.currentCart = cartId;
+      this.updateCartItems();
+    }
+  }
+
+  getCarts(): { label: string, value: string }[] {
+    return Object.keys(this.carts).map(id => ({ label: id, value: id }));
+  }
+
+  getCurrentCartName(): string {
+    return this.currentCart;
   }
 }

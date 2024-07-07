@@ -1,94 +1,79 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../services/cart.service';
-import { Cart } from '../../models/cart';
+import { FavoriteService } from '../../services/favorite.service';
 import { Product } from '../../models/product';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './cart.component.scss'
 })
-export class CartComponent implements OnInit, AfterViewInit {
-  carts: Cart[] = [];
-  selectedCart: Cart | undefined;
 
-  constructor(private cartService: CartService, private cdr: ChangeDetectorRef, private router: Router) {}
+export class CartComponent implements OnInit {
+  cartId: string = '';
+  selectedCart: string | undefined;
+  selectedProducts: Product[] = [];
+  carts: { label: string, value: string }[] = [];
+  objectKeys = Object.keys;
+
+  constructor(
+    public cartService: CartService,
+    public favoriteService: FavoriteService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.carts = this.cartService.getCarts();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.carts.length > 0) {
-      this.selectCart(this.carts[0]); // İlk sepeti seçili hale getir
-    }
-  }
-
-  createCart(): void {
-    const newCart = this.cartService.createCart();
-    this.carts.push(newCart);
-    this.selectCart(newCart); // Yeni oluşturulan sepeti seçili hale getir
-    this.cdr.detectChanges();
-  }
-
-  selectCart(cart: Cart): void {
-    this.selectedCart = cart;
-    this.cdr.detectChanges(); // Değişiklikleri manuel olarak algıla
-  }
-
-  removeFromCart(product: Product): void {
-    if (this.selectedCart) {
-      this.cartService.removeFromCart(this.selectedCart.id, product);
-      this.cdr.detectChanges(); // Değişiklikleri manuel olarak algıla
-    }
-  }
-
-  updateQuantity(product: Product, quantity: number): void {
-    if (this.selectedCart) {
-      const item = this.selectedCart.items.find(item => item.product.productId === product.productId);
-      if (item) {
-        item.quantity = quantity;
-        this.cartService.updateCart(this.selectedCart);
-        this.cdr.detectChanges(); // Değişiklikleri manuel olarak algıla
-      }
-    }
-  }
-
-  calculateTotal(): number {
-    return this.selectedCart ? this.selectedCart.total : 0;
-  }
-
-  calculateShippingFee(): number {
-    return this.selectedCart ? this.selectedCart.shippingFee : 0;
-  }
-
-  removeSelectedItems(): void {
-    if (this.selectedCart) {
-      this.selectedCart.items = this.selectedCart.items.filter(item => !item.selected);
-      this.cartService.updateCart(this.selectedCart);
-      this.cdr.detectChanges(); // Değişiklikleri manuel olarak algıla
-    }
-  }
-
-  selectAllItems(select: boolean): void {
-    if (this.selectedCart) {
-      this.selectedCart.items.forEach(item => item.selected = select);
-      this.cdr.detectChanges(); // Değişiklikleri manuel olarak algıla
+    if (this.carts.length) {
+      this.cartId = this.carts[0].value;
+    } else {
+      const newCart = this.cartService.createCart();
+      this.cartId = newCart.id;
     }
   }
 
   addToCart(product: Product): void {
-    if (this.selectedCart) {
-      this.cartService.addToCart(this.selectedCart.id, product);
-      this.cdr.detectChanges(); // Değişiklikleri manuel olarak algıla
+    if (this.cartId) {
+      this.cartService.addToCart(this.cartId, product);
     }
   }
 
-  goToDetail(productId: string): void {
-    console.log(productId);
+  removeFromCart(productId: string): void {
+    if (this.cartId) {
+      this.cartService.removeFromCart(this.cartId, productId);
+    }
+  }
 
+  getTotalWithShipping(): number {
+    if (this.cartId) {
+      const total = this.cartService.getTotal(this.cartId);
+      return total >= 1000 ? total * 1.2 : (total * 1.2) + 40;
+    }
+    return 0;
+  }
+
+  createCart(cartName: string): void {
+    if (cartName) {
+      this.cartService.createCart();
+      this.carts = this.cartService.getCarts();
+    }
+  }
+
+  switchCart(cartName: string | undefined): void {
+    if (cartName) {
+      this.cartService.switchCart(cartName);
+      this.cartId = cartName;
+    } else {
+      console.error('Invalid cart name');
+    }
+  }
+
+  getCurrentCartName(): string {
+    return this.cartService.getCurrentCartName();
+  }
+
+  goToDetail(productId: string): void {
     this.router.navigate(['/product-detail', productId]);
   }
 }

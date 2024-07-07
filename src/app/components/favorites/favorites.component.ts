@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-favorites',
   templateUrl: './favorites.component.html',
-  styleUrl: './favorites.component.scss'
+  styleUrls: ['./favorites.component.scss']
 })
 export class FavoritesComponent implements OnInit {
   favorites: Product[] = [];
@@ -29,24 +29,26 @@ export class FavoritesComponent implements OnInit {
   }
 
   removeFromFavorites(product: Product): void {
-    this.favoriteService.removeFromFavorites(product);
+    this.favoriteService.removeFromFavorites(product.productId);
     this.favorites = this.favoriteService.getFavorites();
   }
 
   addToCart(product: Product): void {
+    console.log('Adding to cart:', product); // Debugging için log ekleyin
     this.cartService.addToCart(this.cartId, product);
+    console.log('Current cart items:', this.cartService.getCart(this.cartId)); // Debugging için log ekleyin
   }
 
   addSelectedToCart(): void {
     this.selectedFavorites.forEach(product => {
-      this.cartService.addToCart(this.cartId, product);
+      this.addToCart(product);
     });
     this.selectedFavorites = [];
   }
 
   removeSelectedFavorites(): void {
     this.selectedFavorites.forEach(product => {
-      this.favoriteService.removeFromFavorites(product);
+      this.favoriteService.removeFromFavorites(product.productId);
     });
     this.favorites = this.favoriteService.getFavorites();
     this.selectedFavorites = [];
@@ -61,4 +63,5 @@ export class FavoritesComponent implements OnInit {
   goToDetail(productId: string): void {
     this.router.navigate(['/product-detail', productId]);
   }
+
 }

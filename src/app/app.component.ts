@@ -8,6 +8,7 @@ import { HeaderComponent } from './shared/header/header.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 
 import { LoadingService } from './services/loading.service';
+import { CartService } from './services/cart.service';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,7 @@ import { LoadingService } from './services/loading.service';
   ]
 })
 export class AppComponent implements OnInit  {
-  constructor(public router: Router, public loadingService: LoadingService) {}
+  constructor(public router: Router, public loadingService: LoadingService, private cartService: CartService) {}
 
   title = 'sepet-uygulamasi';
 
@@ -43,6 +44,9 @@ export class AppComponent implements OnInit  {
       } else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
         setTimeout(() => this.loadingService.hide(), 500); // Küçük bir gecikme ekleyerek yükleme işlemini daha görünür hale getirin
       }
+    });
+    this.cartService.cartItems$.subscribe(cartItems => {
+      console.log('Current cart items:', cartItems);
     });
   }
 

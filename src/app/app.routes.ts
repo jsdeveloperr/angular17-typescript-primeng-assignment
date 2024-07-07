@@ -15,7 +15,7 @@ export const routes: Routes = [
     loadChildren: () => import('./components/favorites/favorites.module').then((m) => m.FavoritesModule),
   },
   {
-    path: 'product/:id',
+    path: 'product-detail/:id',
     loadChildren: () => import('./components/product-detail/product-detail.module').then(m => m.ProductDetailModule)
   },
   {

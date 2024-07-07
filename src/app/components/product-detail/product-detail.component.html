@@ -34,7 +34,7 @@
   <p-carousel [value]="recommendedProducts" [numVisible]="3" [numScroll]="3" [circular]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-recommendedProduct pTemplate="item">
       <div class="product-card">
-        <div class="relative mx-auto" [routerLink]="['/product-detail', recommendedProduct.productId]">
+        <div class="relative mx-auto" (click)="goToDetail(recommendedProduct.productId)">
           <img [src]="recommendedProduct.productImage[0]" [alt]="recommendedProduct.productName" class="product-image" />
           <p-tag [value]="recommendedProduct.inventoryStatus" [severity]="getSeverity(recommendedProduct.inventoryStatus)" class="absolute" [ngStyle]="{ 'left.px': 5, 'top.px': 5 }"></p-tag>
         </div>

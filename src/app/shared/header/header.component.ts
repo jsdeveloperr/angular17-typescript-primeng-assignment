@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RouterModule,  Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { Product } from '../../models/product';
@@ -12,12 +12,11 @@ import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'main-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
+  styleUrls: ['./header.component.scss'],
   standalone: true,
   imports: [CommonModule, RouterModule, ButtonModule, MenubarModule],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-
   cartItems: Product[] = [];
   favoriteItems: Product[] = [];
   private subscriptions: Subscription[] = [];
@@ -31,12 +30,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.cartService.cartItems$.subscribe(items => {
+      this.cartService.cartItems$.subscribe((items: Product[]) => {
         this.cartItems = items;
       })
     );
     this.subscriptions.push(
-      this.favoriteService.favoriteItems$.subscribe(items => {
+      this.favoriteService.favoriteItems$.subscribe((items: Product[]) => {
         this.favoriteItems = items;
       })
     );
@@ -46,11 +45,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         icon: 'pi pi-fw pi-home',
         command: () => this.router.navigate(['/'])
       },
-      {
-        label: 'Ürünler',
-        icon: 'pi pi-fw pi-list',
-        command: () => this.router.navigate(['/products'])
-      }
     ];
   }
 
@@ -65,5 +59,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-
 }

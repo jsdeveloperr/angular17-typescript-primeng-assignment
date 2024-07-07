@@ -5,6 +5,7 @@ import { CartService } from '../../services/cart.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { Product } from '../../models/product';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-detail',
@@ -22,7 +23,8 @@ export class ProductDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private productService: ProductService,
     private cartService: CartService,
-    private favoriteService: FavoriteService
+    private favoriteService: FavoriteService,
+    private router: Router
   ) {
     this.responsiveOptions = [
       {
@@ -44,21 +46,21 @@ export class ProductDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const productId = this.route.snapshot.paramMap.get('id');
-    if (productId) {
-      this.productService.getProducts().subscribe((products: Product[]) => {
-        this.product = products.find(p => p.productId === productId);
-        this.recommendedProducts = products.filter(p => p.productId !== productId);
-      });
-      this.route.params.subscribe(params => {
-        const productId = params['id'];
-        this.product$ = this.productService.getProductById(productId);
-      });
-    }
+    this.route.paramMap.subscribe(paramMap => {
+      const productId = paramMap.get('id');
+      if (productId) {
+        this.productService.getProductById(productId).subscribe(product => {
+          this.product = product;
+          this.productService.getProducts().subscribe((products: Product[]) => {
+            this.recommendedProducts = products.filter(p => p.productId !== productId);
+          });
+        });
+      }
+    });
 
     const carts = this.cartService.getCarts();
     if (carts.length) {
-      this.cartId = carts[0].id;
+      this.cartId = carts[0].value;
     } else {
       const newCart = this.cartService.createCart();
       this.cartId = newCart.id;
@@ -88,4 +90,7 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+  goToDetail(productId: string): void {
+    this.router.navigate(['/product-detail', productId]);
+  }
 }

@@ -1,50 +1,53 @@
-<div class="cart-container">
-  <div class="carts">
-    <h2>Sepetler</h2>
-    <button pButton type="button" label="Yeni Sepet Oluştur" icon="pi pi-plus" (click)="createCart()" style="margin-bottom: 15px;"></button>
-    <div *ngFor="let cart of carts" (click)="selectCart(cart)" [class.selected]="selectedCart && selectedCart.id === cart.id" class="cart-item">
-      <h3>Sepet {{ cart.id }}</h3>
-      <p>Total: {{ cart.total | currency:'TRY' }}</p>
-    </div>
-  </div>
-
-  <div *ngIf="selectedCart" class="selected-cart">
-    <h2>Seçili Sepet</h2>
-    <div class="actions">
-      <button pButton type="button" label="Tümünü Seç" icon="pi pi-check" (click)="selectAllItems(true)"></button>
-      <button pButton type="button" label="Seçilenleri Çıkart" icon="pi pi-trash" (click)="removeSelectedItems()"></button>
-    </div>
-    <p-table [value]="selectedCart.items" dataKey="product.productId" selectionMode="multiple" [(selection)]="selectedCart.items">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-          </th>
-          <th>Ürün Adı</th>
-          <th>Adet</th>
-          <th>Fiyat</th>
-          <th>İşlemler</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-item>
-        <tr>
-          <td>
-            <p-tableCheckbox [value]="item"></p-tableCheckbox>
-          </td>
-          <td (click)="goToDetail(item.product.productId)">{{ item.product.productName }}</td>
-          <td (click)="goToDetail(item.product.productId)">
-            <p-inputNumber [(ngModel)]="item.quantity" (onInput)="updateQuantity(item.product, item.quantity)"></p-inputNumber>
-          </td>
-          <td (click)="goToDetail(item.product.productId)">{{ item.product.productPrice | currency:'TRY' }}</td>
-          <td>
-            <button pButton type="button" icon="pi pi-trash" label="Çıkart" (click)="removeFromCart(item.product)"></button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-    <div class="cart-summary">
-      <p>Toplam: {{ calculateTotal() | currency:'TRY' }}</p>
-      <p>Kargo Ücreti: {{ calculateShippingFee() | currency:'TRY' }}</p>
-    </div>
-  </div>
+<div class="cart-container" *ngIf="cartId">
+  <p-card>
+   <ng-template pTemplate="title">
+      <h3>Sepetim</h3>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <div class="cart-summary">
+        <p>Total: {{ cartService.getTotal(cartId) | currency:'TRY' }}</p>
+        <p>KDV Dahil ve Kargo Ücreti: {{ getTotalWithShipping() | currency:'TRY' }}</p>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <p-table [value]="cartService.getCart(cartId)" [(selection)]="selectedProducts" dataKey="productId" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3em">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th>Ürün</th>
+            <th>Adet</th>
+            <th>Fiyat</th>
+            <th>Toplam</th>
+            <th>Sil</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="product"></p-tableCheckbox>
+            </td>
+            <td class="clickable" (click)="goToDetail(product.productId)">{{ product.productName }}</td>
+            <td>
+              <p-inputNumber [(ngModel)]="product.quantity" (onBlur)="addToCart(product)" [showButtons]="true" [min]="1"></p-inputNumber>
+            </td>
+            <td class="clickable" (click)="goToDetail(product.productId)">{{ product.productPrice | currency:'TRY' }}</td>
+            <td class="clickable" (click)="goToDetail(product.productId)">{{ product.productPrice * product.quantity | currency:'TRY' }}</td>
+            <td>
+              <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="removeFromCart(product.productId)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="cart-actions">
+        <button pButton type="button" label="Yeni Sepet Oluştur" icon="pi pi-plus" (click)="createCart('newCart')"></button>
+        <p>Mevcut Sepet: {{ getCurrentCartName() }}</p>
+        <p-dropdown [options]="carts" [(ngModel)]="selectedCart" placeholder="Sepet Seç" optionLabel="label" optionValue="value"></p-dropdown>
+        <button pButton type="button" label="Sepet Değiştir" icon="pi pi-refresh" (click)="switchCart(selectedCart)"></button>
+      </div>
+    </ng-template>
+  </p-card>
 </div>

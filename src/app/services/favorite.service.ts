@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { Product } from '../models/product';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,30 +10,45 @@ export class FavoriteService {
   private favoriteItemsSubject = new BehaviorSubject<Product[]>([]);
   favoriteItems$ = this.favoriteItemsSubject.asObservable();
 
-  constructor() {}
-
-  getFavorites(): Product[] {
-    return this.favorites;
+  constructor() {
+    this.loadFavoritesFromLocalStorage();
+    this.updateFavoriteItems();
   }
 
-  addToFavorites(product: Product): void {
-    if (!this.favorites.includes(product)) {
+  private loadFavoritesFromLocalStorage() {
+    const storedFavorites = localStorage.getItem('favorites');
+    if (storedFavorites) {
+      this.favorites = JSON.parse(storedFavorites);
+    }
+  }
+
+  private saveFavoritesToLocalStorage() {
+    localStorage.setItem('favorites', JSON.stringify(this.favorites));
+  }
+
+  private updateFavoriteItems() {
+    this.favoriteItemsSubject.next(this.favorites);
+    this.saveFavoritesToLocalStorage();
+  }
+
+  addToFavorites(product: Product) {
+    if (!this.favorites.find(p => p.productId === product.productId)) {
       this.favorites.push(product);
       this.updateFavoriteItems();
     }
   }
 
-  removeFromFavorites(product: Product): void {
-    this.favorites = this.favorites.filter(p => p.productId !== product.productId);
+  removeFromFavorites(productId: string) {
+    this.favorites = this.favorites.filter(p => p.productId !== productId);
     this.updateFavoriteItems();
   }
 
-  clearFavorites(): void {
+  getFavorites(): Product[] {
+    return this.favorites;
+  }
+
+  clearFavorites() {
     this.favorites = [];
     this.updateFavoriteItems();
-  }
-
-  private updateFavoriteItems(): void {
-    this.favoriteItemsSubject.next([...this.favorites]);
   }
 }

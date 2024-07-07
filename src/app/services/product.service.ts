@@ -9,18 +9,18 @@ import { map } from 'rxjs/operators';
 })
 
 export class ProductService {
-  private jsonURL = 'assets/product.json';
+  private productUrl = 'assets/product.json';
   private products: Product[] = [];
 
   constructor(private http: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.jsonURL);
+    return this.http.get<Product[]>(this.productUrl);
   }
 
-  getProductById(id: string): Observable<Product | undefined> {
+  getProductById(productId: string): Observable<Product | undefined> {
     return this.getProducts().pipe(
-      map((products: Product[]) => products.find(product => product.productId === id))
+      map(products => products.find(product => product.productId === productId))
     );
   }
 }
